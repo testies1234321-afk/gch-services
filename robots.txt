@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://testies1234321-afk.github.io/gch-services/sitemap.xml
