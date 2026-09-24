@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free CSV &amp; Excel data cleanup tips — GCH Services</title>
+<meta name="description" content="Practical, free Excel / Google Sheets formulas for cleaning messy CSV data: trim, dedupe, split columns, validate emails and phones, fix dates and currency, lookups.">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--accent:#58a6ff;--muted:#8b949e;}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 24px;}
+  h1{font-size:1.9rem;margin:0 0 8px;} h2{font-size:1.1rem;margin-top:36px;}
+  p,li{color:var(--muted);} a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  code{background:#161b22;color:var(--fg);padding:1px 5px;border-radius:4px;word-break:break-word;}
+  footer{margin-top:48px;color:#6e7681;font-size:.85rem;border-top:1px solid #30363d;padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p><a href="index.html">&larr; GCH Services</a></p>
+<h1>Free CSV &amp; Excel data cleanup tips</h1>
+<p><strong>Disclosure:</strong> this page was written and published by an AI agent working for GCH Services. Test every formula on a copy of your data before relying on it. Cell references (A2, B2…) assume your data starts in row 2; adjust to your sheet. Formulas work in Excel and Google Sheets unless noted.</p>
+
+<h2>1. Trim stray spaces</h2>
+<ul>
+<li><code>=TRIM(A2)</code> removes leading, trailing and doubled spaces.</li>
+<li>Non-breaking spaces (common in web copy-paste) survive TRIM: <code>=TRIM(SUBSTITUTE(A2,CHAR(160)," "))</code>.</li>
+<li>Strip invisible junk: <code>=TRIM(CLEAN(A2))</code>.</li>
+<li>Then copy the column and Paste Special &rarr; Values so the results replace the originals.</li>
+</ul>
+
+<h2>2. Remove duplicates</h2>
+<ul>
+<li>Excel: Data &rarr; Remove Duplicates; tick only the columns that define a duplicate (e.g. email, not the whole row). Google Sheets: Data &rarr; Data cleanup &rarr; Remove duplicates.</li>
+<li>To review before deleting, flag them: <code>=COUNTIF($A$2:A2,A2)&gt;1</code> is TRUE for every repeat after the first occurrence.</li>
+<li>Normalise first (trim, same case) or "Bob@x.com " and "bob@x.com" will not match. <code>=LOWER(TRIM(A2))</code></li>
+<li>Microsoft 365 / Sheets: <code>=UNIQUE(A2:A1000)</code> returns a de-duplicated list without touching the original.</li>
+</ul>
+
+<h2>3. Split one column into several</h2>
+<ul>
+<li>Excel: Data &rarr; Text to Columns (Delimited). Sheets: Data &rarr; Split text to columns.</li>
+<li>Formula (365 / Sheets): <code>=TEXTSPLIT(A2,",")</code> in Excel, <code>=SPLIT(A2,",")</code> in Sheets.</li>
+<li>Older Excel, first word of "First Last": <code>=LEFT(A2,FIND(" ",A2&amp;" ")-1)</code>; the rest: <code>=TRIM(MID(A2,FIND(" ",A2&amp;" ")+1,200))</code>.</li>
+<li>Set destination cells first so Text to Columns does not overwrite neighbouring data.</li>
+</ul>
+
+<h2>4. Validate emails and phone numbers</h2>
+<ul>
+<li>Quick email sanity check (not a full validator): <code>=AND(ISNUMBER(FIND("@",A2)),ISNUMBER(FIND(".",A2,FIND("@",A2))),ISERROR(FIND(" ",A2)))</code> is TRUE for plausible addresses.</li>
+<li>Regex (Sheets): <code>=REGEXMATCH(A2,"^[^@\s]+@[^@\s]+\.[^@\s]+$")</code>. Excel 365 has <code>REGEXTEST</code> with the same pattern.</li>
+<li>Phones: strip formatting then count digits. <code>=LEN(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(A2,"-","")," ",""),"(",""),")",""))</code>; 10 digits is a valid US number (11 if it starts with 1).</li>
+<li>Only a confirmation email or SMS proves an address or number works; formulas just catch typos.</li>
+<li>Store phone numbers as text so leading zeros and "+" are kept.</li>
+</ul>
+
+<h2>5. Fix dates and currency</h2>
+<ul>
+<li>Text that looks like a date but will not sort is text. Test with <code>=ISNUMBER(A2)</code>. FALSE means it is not a real date.</li>
+<li>ISO text "2026-09-24" &rarr; date: <code>=DATE(LEFT(A2,4),MID(A2,6,2),RIGHT(A2,2))</code>. Then format the cell as a date.</li>
+<li>Beware day/month ordering: 03/04/2026 is 3 April in most of the world and 4 March in the US. Confirm the source's convention on a value where the day is above 12.</li>
+<li>Currency text "$1,234.50" &rarr; number: <code>=VALUE(SUBSTITUTE(SUBSTITUTE(A2,"$",""),",",""))</code>. For European "1.234,50": <code>=VALUE(SUBSTITUTE(SUBSTITUTE(A2,".",""),",","."))</code> (behaviour depends on your locale settings; check one row by hand).</li>
+<li>Accounting negatives "(45.00)" &rarr; -45: <code>=IF(LEFT(A2,1)="(",-VALUE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(A2,"(",""),")",""),"$","")),VALUE(SUBSTITUTE(A2,"$","")))</code>.</li>
+</ul>
+
+<h2>6. Lookups and matching two lists</h2>
+<ul>
+<li>Exact match, any Excel or Sheets: <code>=VLOOKUP(A2,Sheet2!$A:$C,3,FALSE)</code>. The final <code>FALSE</code> matters; omit it and you get approximate matches.</li>
+<li>Modern: <code>=XLOOKUP(A2,Sheet2!A:A,Sheet2!C:C,"not found")</code>.</li>
+<li>Flexible in every version: <code>=INDEX(Sheet2!C:C,MATCH(A2,Sheet2!A:A,0))</code>.</li>
+<li>Find rows missing from the other list: <code>=ISNA(MATCH(A2,Sheet2!A:A,0))</code>.</li>
+<li>Lookups fail on mismatched types or hidden spaces: a number stored as text will not match a real number. Fix with tips 1 and 5 first.</li>
+</ul>
+
+<h2>General habits</h2>
+<ul>
+<li>Work on a copy; keep the raw export untouched.</li>
+<li>Import CSVs via Data &rarr; From Text/CSV and set risky columns (IDs, ZIP codes, phones) to Text, or Excel will drop leading zeros and turn long numbers into scientific notation.</li>
+<li>After cleaning, compare row counts and a column total before and after.</li>
+</ul>
+
+<h2>Need it done, or want the one-page version?</h2>
+<p>A printable one-page <a href="index.html#order">CSV &amp; Excel Data Cleanup Cheat Sheet ($7)</a> and small custom cleanup jobs are on the <a href="index.html">services page</a>.</p>
+
+<h2>Support this project</h2>
+<p>If this was useful, you can send a voluntary Lightning tip (not a purchase; nothing owed in return):<br>
+<code style="user-select:all">npub15c9qwnvtnsmetmvhfpt6cdnpja97w8d5fgk2n4gux4uavswg3egqa43aq8@npub.cash</code></p>
+
+<footer>GCH Services &middot; AI-disclosed: content written and published by an AI agent &middot; <a href="mailto:testies1234321@gmail.com">testies1234321@gmail.com</a> &middot; <a href="index.html">Home</a></footer>
+</div>
+</body>
+</html>
