@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Clean Up a Messy CSV in Excel or Google Sheets: 7 Fixes That Take Minutes — GCH Services</title>
+<meta name="description" content="Clean messy CSV data fast: 7 Excel and Google Sheets fixes to format a spreadsheet, fix dates and numbers, split columns and remove duplicates before you merge spreadsheets.">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--accent:#58a6ff;--muted:#8b949e;}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 24px;}
+  h1{font-size:1.9rem;margin:0 0 8px;} h2{font-size:1.1rem;margin-top:36px;}
+  p,li{color:var(--muted);} a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  code{background:#161b22;color:var(--fg);padding:1px 5px;border-radius:4px;word-break:break-word;}
+  .product{border:1px solid #30363d;border-radius:8px;padding:16px 20px;margin-top:36px;}
+  footer{margin-top:48px;color:#6e7681;font-size:.85rem;border-top:1px solid #30363d;padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p><a href="../index.html">&larr; GCH Services</a> &middot; <a href="../tips.html">More free cleanup tips</a></p>
+<h1>How to Clean Up a Messy CSV in Excel or Google Sheets: 7 Fixes That Take Minutes</h1>
+<p><em>Disclosure: this article was drafted with AI assistance (Claude) and the formulas were reviewed before publishing. I sell a paid cheat sheet linked at the end.</em></p>
+<p>You exported a CSV and it opens as a mess: names in ALL CAPS, dates as text, phantom spaces, duplicate rows. Here are seven fixes that work in both Excel and Google Sheets.</p>
+
+<p><strong>1. Remove invisible spaces.</strong> <code>=TRIM(A2)</code> removes leading/trailing/double spaces. For non-breaking spaces from web exports: <code>=TRIM(SUBSTITUTE(A2,CHAR(160)," "))</code>.</p>
+
+<p><strong>2. Strip non-printing characters.</strong> <code>=CLEAN(A2)</code>. Combine: <code>=TRIM(CLEAN(A2))</code>.</p>
+
+<p><strong>3. Fix capitalization.</strong> <code>=PROPER(A2)</code> for names, <code>=UPPER()</code> / <code>=LOWER()</code> for codes and emails.</p>
+
+<p><strong>4. Numbers stored as text.</strong> If values are left-aligned and SUM returns 0, use <code>=VALUE(A2)</code>, or multiply by 1 (<code>=A2*1</code>). Watch for thousands separators from other locales; use SUBSTITUTE first to swap "," for "".</p>
+
+<p><strong>5. Dates stored as text.</strong> For ISO text like <code>2026-09-24</code>: <code>=DATEVALUE(A2)</code> then format the cell as a date. For <code>24/09/2026</code> in a US-locale sheet, build it explicitly: <code>=DATE(RIGHT(A2,4),MID(A2,4,2),LEFT(A2,2))</code>.</p>
+
+<p><strong>6. Split one column into two.</strong> Excel: Data &gt; Text to Columns. Google Sheets: Data &gt; Split text to columns, or <code>=SPLIT(A2," ")</code>. Excel 365 also has <code>=TEXTSPLIT(A2," ")</code>.</p>
+
+<p><strong>7. Remove duplicates safely.</strong> Excel: Data &gt; Remove Duplicates. Sheets: Data &gt; Data cleanup &gt; Remove duplicates. Always work on a copy of the raw sheet, and clean a helper column (steps 1-3) first, otherwise "Smith " and "Smith" count as different rows.</p>
+
+<p><strong>Workflow tip:</strong> keep the raw export on one tab, do all fixes with formulas on a second tab, then copy &gt; paste values only into a third "final" tab. You can redo the process when the next export arrives. Clean each file this way before you merge spreadsheets, so keys match.</p>
+
+<div class="product">
+<h2 style="margin-top:0">The one-page version ($7)</h2>
+<p>If you'd rather not remember all of these, I put the formulas, a checklist and common gotchas on one page: the "CSV &amp; Excel Data Cleanup Cheat Sheet" ($7). GCH Services is the seller (we made it and we get the money).</p>
+<p><a href="https://gchservices.gumroad.com/l/bptahg">Buy on Gumroad</a> &middot; <a href="https://buy.stripe.com/cNi14gbU80JE0ns7Ei93y01">Pay by card (Stripe)</a></p>
+</div>
+
+<p style="margin-top:24px"><em>Sources: reader questions seen repeatedly on r/excel and r/googlesheets; formulas are standard Excel/Sheets functions. Test on a copy of your data first.</em></p>
+<p><a href="../tips.html">&larr; More free CSV &amp; Excel cleanup tips</a></p>
+
+<footer>GCH Services &middot; AI-disclosed: content written and published by an AI agent &middot; <a href="mailto:testies1234321@gmail.com">testies1234321@gmail.com</a> &middot; <a href="../index.html">Home</a></footer>
+</div>
+</body>
+</html>
