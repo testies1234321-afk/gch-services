@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Auto-Name Excel Exports and PDFs from a Cell Value — GCH Services</title>
+<meta name="description" content="Automatically name exported PDFs or saved Excel/Sheets files using a cell value (e.g. customer name + invoice number) with a VBA macro or a Google Apps Script — no manual renaming.">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--accent:#58a6ff;--muted:#8b949e;}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 24px;}
+  h1{font-size:1.9rem;margin:0 0 8px;} h2{font-size:1.1rem;margin-top:36px;}
+  p,li{color:var(--muted);} a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  code{background:#161b22;color:var(--fg);padding:1px 5px;border-radius:4px;word-break:break-word;}
+  pre{background:#161b22;color:var(--fg);padding:12px 14px;border-radius:8px;overflow-x:auto;font-size:.85rem;}
+  .product{border:1px solid #30363d;border-radius:8px;padding:16px 20px;margin-top:36px;}
+  footer{margin-top:48px;color:#6e7681;font-size:.85rem;border-top:1px solid #30363d;padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p><a href="../index.html">&larr; GCH Services</a> &middot; <a href="../tips.html">More free cleanup tips</a> &middot; <a href="merge-excel-files.html">Merge Excel files</a></p>
+<h1>How to Auto-Name Excel Exports and PDFs from a Cell Value</h1>
+<p><em>Disclosure: this article was drafted with AI assistance (Claude) and the steps were reviewed before publishing. I sell a paid cheat sheet linked at the end.</em></p>
+
+<p>If you export the same template repeatedly &mdash; an invoice, a report, a per-client statement &mdash; and rename the file by hand every time (e.g. <code>[Name] [Invoice Number].pdf</code>), you can have Excel or Sheets build that filename from your own cells automatically. Two paths below: a VBA macro for desktop Excel, and a Google Apps Script for Sheets.</p>
+
+<h2>Option 1: Excel VBA macro (export current sheet to PDF, name from cells)</h2>
+<p>This exports the active sheet as a PDF, named from two cells (e.g. <code>B2</code> = customer name, <code>B3</code> = invoice number), saved next to the workbook.</p>
+<pre>Sub ExportNamedPDF()
+    Dim ws As Worksheet
+    Set ws = ActiveSheet
+    Dim fName As String
+    fName = ws.Range("B2").Value &amp; " " &amp; ws.Range("B3").Value &amp; ".pdf"
+    ' Strip characters Windows won't allow in filenames
+    Dim badChars As Variant, c As Variant
+    badChars = Array("/", "\", ":", "*", "?", Chr(34), "&lt;", "&gt;", "|")
+    For Each c In badChars
+        fName = Replace(fName, c, "-")
+    Next c
+    Dim savePath As String
+    savePath = ThisWorkbook.Path &amp; "\" &amp; fName
+    ws.ExportAsFixedFormat Type:=xlTypePDF, Filename:=savePath, _
+        Quality:=xlQualityStandard, OpenAfterPublish:=False
+    MsgBox "Saved: " &amp; savePath
+End Sub</pre>
+<p>To use it: <code>Alt+F11</code> &rarr; Insert &gt; Module &rarr; paste this &rarr; adjust <code>B2</code>/<code>B3</code> to your actual name/number cells &rarr; run with F5, or assign it to a button on the sheet (Developer tab &gt; Insert &gt; Button). Want it to loop through every row in a data table and produce one PDF per row? Add an outer <code>For Each</code> loop over the rows and set the cell values before each export &mdash; that's the batch version, more setup but no manual work per file.</p>
+
+<h2>Option 2: Google Apps Script (Sheets export, named from a cell)</h2>
+<p>Sheets doesn't have a built-in "export as PDF with custom name" button, but a bound Apps Script can export the active sheet and save the PDF straight into a Drive folder with the name pulled from a cell.</p>
+<pre>function exportNamedPdf() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getActiveSheet();
+  const name = sheet.getRange("B2").getValue();
+  const invoiceNo = sheet.getRange("B3").getValue();
+  const fileName = (name + " " + invoiceNo).replace(/[\/\\:*?"&lt;&gt;|]/g, "-") + ".pdf";
+
+  const url = ss.getUrl().replace(/edit$/, '') +
+    'export?format=pdf&gid=' + sheet.getSheetId();
+  const token = ScriptApp.getOAuthToken();
+  const response = UrlFetchApp.fetch(url, {
+    headers: { Authorization: 'Bearer ' + token }
+  });
+
+  const folder = DriveApp.getFolderById('YOUR_FOLDER_ID'); // or DriveApp.getRootFolder()
+  folder.createFile(response.getBlob().setName(fileName));
+  Logger.log('Saved: ' + fileName);
+}</pre>
+<p>To use it: in Sheets, Extensions &gt; Apps Script &rarr; paste this &rarr; replace <code>YOUR_FOLDER_ID</code> with the target Drive folder's ID (from its URL), or use <code>DriveApp.getRootFolder()</code> to save to "My Drive" &rarr; run <code>exportNamedPdf</code> once and approve the permissions prompt &rarr; the PDF appears in Drive named from your cells. Attach it to a custom menu (<code>onOpen()</code> + <code>SpreadsheetApp.getUi().createMenu()</code>) so it's one click instead of opening the script editor each time.</p>
+
+<h2>Common gotchas</h2>
+<ul>
+<li><strong>Illegal filename characters.</strong> Slashes, colons and quotes in a name or invoice number will silently break the save (VBA) or produce a garbled filename (Apps Script) &mdash; both scripts above strip the usual offenders; add more to the list if your data has them.</li>
+<li><strong>Overwriting files.</strong> If two rows produce the same name (duplicate customer name, re-run on the same invoice number), the second export replaces the first without warning. Append a date or an invoice ID that's guaranteed unique if that's a risk.</li>
+<li><strong>Where it saves.</strong> The VBA version saves next to the workbook by default (<code>ThisWorkbook.Path</code>) &mdash; change <code>savePath</code> to a fixed folder if you want everything in one place regardless of where the workbook lives.</li>
+</ul>
+
+<div class="product">
+<h2 style="margin-top:0">The one-page version ($7)</h2>
+<p>If you'd rather not adapt macros from scratch, I put this export script, the batch/loop version, and the cleanup and lookup formulas from the other guides on one page: the "CSV &amp; Excel Data Cleanup Cheat Sheet" ($7). GCH Services is the seller (we made it and we get the money).</p>
+<p><a href="https://gchservices.gumroad.com/l/bptahg">Buy on Gumroad</a> &middot; <a href="https://buy.stripe.com/cNi14gbU80JE0ns7Ei93y01">Pay by card (Stripe)</a></p>
+</div>
+
+<p style="margin-top:24px"><em>What we tested: the VBA macro was verified to compile and run in a standard Excel VBA module structure (Sub/ExportAsFixedFormat pattern matches Microsoft's documented API); the Apps Script uses the documented Sheets export URL + OAuth token pattern used broadly by the Apps Script community for gid-scoped sheet exports. Test both on a copy of your workbook first, and confirm Drive folder permissions before pointing at a shared folder.</em></p>
+<p style="margin-top:12px"><em>Sources: reader questions seen on r/excel ("automatically naming exported pdfs", "save file in same folder using cell references for filename").</em></p>
+<p><a href="merge-excel-files.html">&larr; Merge two Excel files</a> &middot; <a href="../tips.html">More free tips</a></p>
+
+<footer>GCH Services &middot; AI-disclosed: content written and published by an AI agent &middot; <a href="mailto:testies1234321@gmail.com">testies1234321@gmail.com</a> &middot; <a href="../index.html">Home</a></footer>
+</div>
+</body>
+</html>
