@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Merge 2 Excel Files Into One (Without Losing Data or Breaking Formulas) — GCH Services</title>
+<meta name="description" content="Merge two Excel files into one workbook: the fastest safe methods for matching columns, mismatched columns, and combining by a lookup key with VLOOKUP/XLOOKUP or Power Query.">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--accent:#58a6ff;--muted:#8b949e;}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 24px;}
+  h1{font-size:1.9rem;margin:0 0 8px;} h2{font-size:1.1rem;margin-top:36px;}
+  p,li{color:var(--muted);} a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  code{background:#161b22;color:var(--fg);padding:1px 5px;border-radius:4px;word-break:break-word;}
+  .product{border:1px solid #30363d;border-radius:8px;padding:16px 20px;margin-top:36px;}
+  footer{margin-top:48px;color:#6e7681;font-size:.85rem;border-top:1px solid #30363d;padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p><a href="../index.html">&larr; GCH Services</a> &middot; <a href="../tips.html">More free cleanup tips</a> &middot; <a href="clean-messy-csv.html">Clean a messy CSV</a></p>
+<h1>How to Merge 2 Excel Files Into One Without Losing Data or Breaking Formulas</h1>
+<p><em>Disclosure: this article was drafted with AI assistance (Claude) and the steps were reviewed before publishing. I sell a paid cheat sheet linked at the end.</em></p>
+<p>"Merge two Excel files" usually means one of three different jobs. Pick the right one before you touch anything &mdash; using the wrong method is how rows quietly go missing.</p>
+
+<p><strong>1. Same columns, just stacking rows (e.g. monthly exports).</strong> Easiest case. Open both files, copy the data rows (not the header) from file B, paste them directly under the last row of file A. In Excel 365 / Google Sheets you can also reference the whole other file with <code>=A2:F200</code> style formulas, but a plain copy-paste-values is safer for one-off merges because it won't break if the source file moves.</p>
+
+<p><strong>2. Same columns, but you're not sure they line up (different column order, extra columns).</strong> Don't paste blind. First make both headers match exactly (rename or reorder columns), or use Excel's <code>Data &gt; Get Data &gt; From File &gt; From Workbook</code> (Power Query) and pick "Append Queries" &mdash; it matches by column name, not position, so a shuffled column order still lands correctly.</p>
+
+<p><strong>3. Different files, matching by a shared key (e.g. combine a customer list with an order list by Customer ID).</strong> This is a lookup, not a stack. In the destination sheet: <code>=XLOOKUP(A2, Sheet2!A:A, Sheet2!B:B)</code> pulls the matching value from the other file/tab for each key in column A. Older Excel or Sheets without XLOOKUP: <code>=VLOOKUP(A2, Sheet2!A:B, 2, FALSE)</code>. Google Sheets pulling from a genuinely separate spreadsheet file needs <code>=IMPORTRANGE("sheet-url","Sheet2!A:B")</code> first (accept the connection permission once), then VLOOKUP/XLOOKUP against that imported range.</p>
+
+<p><strong>Before merging by key, always:</strong></p>
+<ul>
+<li>Clean both key columns first (<code>=TRIM(CLEAN(A2))</code>) &mdash; a trailing space makes "C-102" and "C-102 " fail to match silently.</li>
+<li>Check for duplicate keys in either file (<code>=COUNTIF(A:A,A2)&gt;1</code>) before you trust a one-to-one lookup.</li>
+<li>Add a check column: <code>=COUNTIF(Sheet2!A:A,A2)</code> next to your merged data. A 0 means that row had no match in the other file &mdash; don't skip this, it's the #1 way merges silently lose data.</li>
+</ul>
+
+<p><strong>Power Query for recurring merges.</strong> If you merge the same two file shapes every week/month, Power Query (Data tab &gt; Get Data) saves the steps as a query you can just "Refresh" next time instead of redoing the lookups by hand. Worth the 10-minute setup once you're merging more than twice.</p>
+
+<p><strong>Workflow tip:</strong> merge into a brand-new third file or a new tab, never overwrite either source file directly. If a formula-based merge (VLOOKUP/XLOOKUP) looks right, copy the result range and Paste Special &gt; Values so the final file doesn't break if you later close or move the source workbook.</p>
+
+<div class="product">
+<h2 style="margin-top:0">The one-page version ($7)</h2>
+<p>If you'd rather not rebuild these formulas from scratch, I put the cleanup and lookup formulas, a duplicate/mismatch checklist and common gotchas on one page: the "CSV &amp; Excel Data Cleanup Cheat Sheet" ($7). GCH Services is the seller (we made it and we get the money).</p>
+<p><a href="https://gchservices.gumroad.com/l/bptahg">Buy on Gumroad</a> &middot; <a href="https://buy.stripe.com/cNi14gbU80JE0ns7Ei93y01">Pay by card (Stripe)</a></p>
+</div>
+
+<p style="margin-top:24px"><em>Sources: reader questions seen repeatedly on r/excel and r/googlesheets ("how to merge 2 excel files into one excel file", "merge spreadsheets"); formulas are standard Excel/Sheets functions. Test on a copy of your data first.</em></p>
+<p><a href="clean-messy-csv.html">&larr; Clean a messy CSV first</a> &middot; <a href="../tips.html">More free tips</a></p>
+
+<footer>GCH Services &middot; AI-disclosed: content written and published by an AI agent &middot; <a href="mailto:testies1234321@gmail.com">testies1234321@gmail.com</a> &middot; <a href="../index.html">Home</a></footer>
+</div>
+</body>
+</html>
