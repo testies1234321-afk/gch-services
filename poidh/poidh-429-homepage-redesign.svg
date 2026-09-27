@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="640" viewBox="0 0 1000 640" font-family="Helvetica,Arial,sans-serif">
+  <!-- background -->
+  <rect width="1000" height="640" fill="#f4f1ea"/>
+
+  <!-- header / nav -->
+  <rect x="0" y="0" width="1000" height="70" fill="#141414"/>
+  <text x="28" y="43" fill="#ffffff" font-size="26" font-weight="bold">poidh</text>
+  <text x="130" y="43" fill="#b5b5b5" font-size="14">.xyz</text>
+  <text x="440" y="43" fill="#e6e6e6" font-size="15">Bounties</text>
+  <text x="540" y="43" fill="#e6e6e6" font-size="15">Leaderboard</text>
+  <text x="660" y="43" fill="#e6e6e6" font-size="15">Docs</text>
+  <rect x="860" y="18" width="112" height="34" rx="17" fill="#ff5b35"/>
+  <text x="882" y="41" fill="#141414" font-size="14" font-weight="bold">Connect</text>
+
+  <!-- hero -->
+  <rect x="0" y="70" width="1000" height="230" fill="#141414"/>
+  <text x="60" y="150" fill="#ffffff" font-size="40" font-weight="bold">Pics or it didn't happen.</text>
+  <text x="60" y="150" fill="#ffffff" font-size="40" font-weight="bold" opacity="0"> </text>
+  <text x="60" y="190" fill="#dcdcdc" font-size="18">Post a bounty. Submit proof. Get paid onchain — no middleman, no waiting.</text>
+  <rect x="60" y="220" width="170" height="46" rx="8" fill="#ff5b35"/>
+  <text x="88" y="249" fill="#141414" font-size="16" font-weight="bold">Create bounty</text>
+  <rect x="248" y="220" width="150" height="46" rx="8" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+  <text x="278" y="249" fill="#ffffff" font-size="16">Browse open</text>
+  <!-- hero side stat card (new element) -->
+  <rect x="700" y="110" width="240" height="150" rx="10" fill="#1e1e1e" stroke="#333333"/>
+  <text x="722" y="145" fill="#9aa4b2" font-size="13">TOTAL PAID OUT</text>
+  <text x="722" y="182" fill="#ffffff" font-size="30" font-weight="bold">12.4 ETH</text>
+  <text x="722" y="210" fill="#9aa4b2" font-size="13">across 438 bounties</text>
+  <text x="722" y="236" fill="#4ade80" font-size="13">↑ 6 new today</text>
+
+  <!-- feature row: 3 open bounty cards, sorted by "closing soonest" (new sort) -->
+  <text x="60" y="335" fill="#141414" font-size="20" font-weight="bold">Closing soonest</text>
+  <text x="880" y="335" fill="#8a6f4a" font-size="14">sort ▾</text>
+
+  <g>
+    <rect x="60" y="355" width="270" height="160" rx="10" fill="#ffffff" stroke="#ddd6c8"/>
+    <rect x="76" y="371" width="238" height="70" rx="6" fill="#ece6d6"/>
+    <text x="86" y="410" fill="#8a6f4a" font-size="12">screenshot preview</text>
+    <text x="76" y="462" fill="#141414" font-size="15" font-weight="bold">homepage redesign</text>
+    <text x="76" y="482" fill="#6b6b6b" font-size="12">0.001 ETH · closes Sep 30</text>
+    <rect x="76" y="494" width="60" height="10" rx="5" fill="#eee"/>
+    <rect x="76" y="494" width="42" height="10" rx="5" fill="#ff5b35"/>
+  </g>
+  <g>
+    <rect x="365" y="355" width="270" height="160" rx="10" fill="#ffffff" stroke="#ddd6c8"/>
+    <rect x="381" y="371" width="238" height="70" rx="6" fill="#ece6d6"/>
+    <text x="391" y="410" fill="#8a6f4a" font-size="12">screenshot preview</text>
+    <text x="381" y="462" fill="#141414" font-size="15" font-weight="bold">offline claim UI</text>
+    <text x="381" y="482" fill="#6b6b6b" font-size="12">0.002 ETH · closes Oct 2</text>
+    <rect x="381" y="494" width="60" height="10" rx="5" fill="#eee"/>
+    <rect x="381" y="494" width="20" height="10" rx="5" fill="#ff5b35"/>
+  </g>
+  <g>
+    <rect x="670" y="355" width="270" height="160" rx="10" fill="#ffffff" stroke="#ddd6c8"/>
+    <rect x="686" y="371" width="238" height="70" rx="6" fill="#ece6d6"/>
+    <text x="696" y="410" fill="#8a6f4a" font-size="12">screenshot preview</text>
+    <text x="686" y="462" fill="#141414" font-size="15" font-weight="bold">retro dev setup</text>
+    <text x="686" y="482" fill="#6b6b6b" font-size="12">0.001 ETH · closes Oct 4</text>
+    <rect x="686" y="494" width="60" height="10" rx="5" fill="#eee"/>
+    <rect x="686" y="494" width="12" height="10" rx="5" fill="#ff5b35"/>
+  </g>
+
+  <!-- secondary content row: recent claims ticker -->
+  <text x="60" y="558" fill="#141414" font-size="18" font-weight="bold">Recent claims</text>
+  <rect x="60" y="572" width="880" height="34" rx="6" fill="#ffffff" stroke="#ddd6c8"/>
+  <text x="76" y="594" fill="#6b6b6b" font-size="13">0x7f3a…c21b claimed "logo refresh" · 0x22b9…4e10 claimed "landing copy" · 0x51ac…9f30 claimed "mobile nav"</text>
+
+  <!-- footer -->
+  <rect x="0" y="616" width="1000" height="24" fill="#141414"/>
+  <text x="28" y="632" fill="#9aa4b2" font-size="12">poidh.xyz · built on Base · mockup by income-b (AI-assisted, disclosed) for bounty #429</text>
+</svg>
