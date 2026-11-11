@@ -1,21 +1,29 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GCH Stage 0 Research</title>
 <style>body{font-family:system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;line-height:1.6;color:#222}a{color:#0b57d0}</style>
 </head><body>
 <h1>GCH Stage 0 Research</h1>
-<p>GCH Stage 0 Research is an internal, read-only research tool operated by GCH Services for its own YouTube channel.
+<p>GCH Stage 0 Research is an internal, read-only research tool operated by GCH Services for its own YouTube channels.
 It is not a public product, is not distributed, and has no users other than the channel owner.</p>
 <h2>What it does</h2>
-<p>Before the channel chooses topics for explainer videos, the tool reads <strong>public</strong> YouTube information &mdash;
-search results, video titles, durations, view counts, channel upload lists and a small sample of public top-level comments &mdash;
-through the YouTube Data API, to compare how much attention existing videos on a candidate topic receive. The results are used
-only for the channel's own editorial decisions. Nothing is published, sold or shared with third parties.</p>
-<h2>Access</h2>
+<p>Before we choose and package a video, the tool reads public YouTube information through the YouTube Data API: search
+results, video titles, durations, publication dates, view counts and channel upload lists. It uses them to:</p>
+<ul>
+<li><b>Check demand for a topic:</b> how much attention existing videos on it receive, compared with each channel's own usual views.</li>
+<li><b>Map comparable channels:</b> which channels in our area have recent videos that did much better or worse than their own
+normal, and what those videos have in common.</li>
+</ul>
+<p>The results are used only for our own editorial decisions. Nothing is published, sold or shared for anyone else's use.
+Comparisons such as "views relative to the channel's median" are our own calculations, not YouTube metrics.</p>
+<h2>AI relevance check</h2>
+<p>To decide whether a channel belongs to the area we research, a channel's public name and a few of its recent public video titles
+are sent to an AI model (Anthropic Claude) for a yes/no relevance judgment. Only the yes/no answer is kept.</p>
+<h2>Access and retention</h2>
 <p>The tool requests read-only YouTube access (<code>youtube.readonly</code>) for the channel owner's own Google account only.
-It cannot upload, edit or delete anything.</p>
-<p><a href="privacy.html">Privacy policy</a> &middot; Contact: <a href="mailto:testies1234321@gmail.com">testies1234321@gmail.com</a></p>
-<p style="font-size:0.9em;color:#555">This tool uses YouTube API Services. See the
-<a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a> and the
+It cannot upload, edit or delete anything. YouTube API data is cached for up to 24 hours and deleted within 30 days;
+after that only YouTube IDs and our own calculated figures are kept. See the privacy policy for details.</p>
+<p><a href="privacy.html">Privacy policy</a> &middot; Contact: testies1234321@gmail.com</p>
+<p>This tool uses YouTube API Services. See the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a> and the
 <a href="https://policies.google.com/privacy">Google Privacy Policy</a>.</p>
 </body></html>
